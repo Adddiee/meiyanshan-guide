@@ -1,66 +1,35 @@
-const species = [
-  {
-    id: "MYS-001",
-    name: "釉彩蠟膜蝦",
-    englishName: "Harlequin Shrimp",
-    scientificName: "Hymenocera picta",
-    category: "甲殼類",
-    rarity: "★★★★☆",
-    searchDifficulty: 3,
-    image: "/釉彩蠟膜蝦01_20260613.jpg",
-    note: "像彩繪瓷器一樣華麗，常與海星、礁縫環境有關。",
-    layout: "square",
-  },
-  {
-    id: "MYS-002",
-    name: "卡森瘤背海蛞蝓",
-    englishName: "Carson's Dorid",
-    scientificName: "Jorunna parva group",
-    category: "海蛞蝓",
-    rarity: "★★★☆☆",
-    searchDifficulty: 3,
-    image: "/卡森瘤背海蛞蝓01_20260613.jpg",
-    note: "白色身體與黃色突起非常醒目，適合新手練習觀察微小生物。",
-    layout: "square",
-  },
-  {
-    id: "MYS-003",
-    name: "日本矛吻海龍",
-    englishName: "Japanese Ghost Pipefish",
-    scientificName: "Solenostomus japonicus",
-    category: "魚類",
-    rarity: "★★★★☆",
-    searchDifficulty: 4,
-    image: "/日本矛吻海龍01_202603.jpg",
-    note: "細長、擬態感強，常常明明在眼前卻很容易錯過。",
-    layout: "landscape",
-  },
-];
+import SpeciesGrid from "@/components/SpeciesGrid";
+import { getSpecies } from "@/lib/species";
 
-function imageClass(layout: string) {
-  if (layout === "landscape") return "aspect-[16/9] object-cover";
-  if (layout === "portrait") return "aspect-[4/5] object-cover";
-  return "aspect-square object-cover";
-}
+export default async function Home() {
+  const species = await getSpecies();
 
-function TankLevel({ level }: { level: number }) {
-  return (
-    <div className="flex gap-1">
-      {[1, 2, 3, 4, 5].map((tank) => (
-        <div
-          key={tank}
-          className={`h-4 w-2 rounded-full border ${
-            tank <= level
-              ? "border-[#2d7780] bg-[#2d7780]"
-              : "border-stone-300 bg-transparent"
-          }`}
-        />
-      ))}
-    </div>
+  const speciesCount = species.length;
+
+  const photoCount = species.reduce(
+    (sum, item) => sum + item.gallery.length,
+    0
   );
-}
 
-export default function Home() {
+  const latestDate = species
+    .map((item) => item.firstSeen)
+    .filter(Boolean)
+    .sort()
+    .at(-1);
+
+  const latestMonth = latestDate
+    ? new Date(latestDate)
+        .toLocaleString("en-US", { month: "short" })
+        .toUpperCase()
+    : "JUN";
+
+  const latestYear = latestDate ? new Date(latestDate).getFullYear() : 2026;
+
+  const categories = [
+    "全部",
+    ...Array.from(new Set(species.map((item) => item.category))),
+  ];
+
   return (
     <main className="min-h-screen bg-[#faf9f5] text-[#1d1d1f]">
       <header className="mx-auto flex max-w-7xl items-start justify-between px-5 py-6 md:px-10 md:py-10">
@@ -81,7 +50,7 @@ export default function Home() {
         </nav>
       </header>
 
-      <section className="relative mx-auto min-h-[680px] max-w-7xl overflow-hidden px-5 pb-20 pt-8 md:min-h-[760px] md:px-10 md:pb-24 md:pt-12">
+      <section className="relative mx-auto min-h-[480px] max-w-7xl overflow-hidden px-5 pb-20 pt-8 md:min-h-[760px] md:px-10 md:pb-24 md:pt-12">
         <div className="absolute right-0 top-0 h-[680px] w-full overflow-hidden rounded-sm md:h-[760px]">
           <img
             src="/hero-water.jpg"
@@ -118,7 +87,7 @@ export default function Home() {
           <div className="mt-12 flex items-start gap-7 md:mt-20 md:gap-16">
             <div>
               <p className="font-sans text-4xl font-semibold tracking-[-0.05em] md:text-6xl">
-                03
+                {String(speciesCount).padStart(2, "0")}
               </p>
               <p className="mt-2 whitespace-nowrap text-xs font-medium tracking-wide text-stone-500 md:mt-3 md:text-sm">
                 已收錄物種
@@ -129,7 +98,7 @@ export default function Home() {
 
             <div>
               <p className="font-sans text-4xl font-semibold tracking-[-0.05em] md:text-6xl">
-                07
+                {String(photoCount).padStart(2, "0")}
               </p>
               <p className="mt-2 whitespace-nowrap text-xs font-medium tracking-wide text-stone-500 md:mt-3 md:text-sm">
                 照片紀錄
@@ -140,10 +109,10 @@ export default function Home() {
 
             <div>
               <p className="font-sans text-4xl font-semibold tracking-[-0.05em] md:text-6xl">
-                JUN
+                {latestMonth}
               </p>
               <p className="mt-2 whitespace-nowrap text-xs font-medium tracking-wide text-stone-500 md:mt-3 md:text-sm">
-                最後更新 · 2026
+                最後更新 · {latestYear}
               </p>
             </div>
           </div>
@@ -166,119 +135,8 @@ export default function Home() {
               <br />
               有些很常見，有些可能要找上好幾次才有機會相遇。
             </p>
-          </div>
 
-          {/* Mobile / Tablet compact guide */}
-          <div className="grid grid-cols-2 gap-x-4 gap-y-8 lg:hidden">
-            {species.map((item) => (
-              <a
-                key={item.id}
-                href={`/species/${item.id}`}
-                className="group cursor-pointer transition duration-300 active:scale-[0.98]"
-              >
-                <div className="relative overflow-hidden rounded-2xl bg-[#f0eee8]">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="aspect-square w-full object-cover transition duration-700 group-hover:scale-105"
-                  />
-
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent" />
-
-                  <div className="absolute bottom-0 left-0 right-0 p-3 text-white">
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.18em] opacity-80">
-                      {item.id}
-                    </p>
-                    <h3 className="mt-1 line-clamp-2 text-[15px] font-semibold leading-tight tracking-[-0.04em]">
-                      {item.name}
-                    </h3>
-                    <p className="mt-1 line-clamp-1 text-[11px] text-white/75">
-                      {item.englishName}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="pt-3">
-                  <div className="space-y-2">
-                    <div>
-                      <p className="mb-1 text-[11px] font-medium text-stone-500">
-                        稀有度
-                      </p>
-                      <p className="text-sm tracking-widest text-[#a77b55]">
-                        {item.rarity}
-                      </p>
-                    </div>
-
-                    <div>
-                      <p className="mb-1 text-[11px] font-medium text-stone-500">
-                        尋找難度
-                      </p>
-                      <TankLevel level={item.searchDifficulty} />
-                    </div>
-                  </div>
-
-                  <p className="mt-3 line-clamp-2 text-[11px] font-medium leading-4 text-stone-600">
-                    {item.note}
-                  </p>
-                </div>
-              </a>
-            ))}
-          </div>
-
-          {/* Desktop masonry guide */}
-          <div className="hidden columns-1 gap-8 lg:block lg:columns-3">
-            {species.map((item) => (
-              <article
-                key={item.id}
-                className="group mb-14 break-inside-avoid"
-              >
-                <a href={`/species/${item.id}`}>
-                  <div className="overflow-hidden rounded-2xl bg-[#f0eee8]">
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className={`${imageClass(
-                        item.layout
-                      )} w-full transition duration-700 group-hover:scale-105`}
-                    />
-                  </div>
-
-                  <div className="pt-7">
-                    <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#a77b55]">
-                      {item.id} · {item.category}
-                    </p>
-
-                    <h3 className="mt-4 text-3xl font-semibold tracking-[-0.06em]">
-                      {item.name}
-                    </h3>
-
-                    <p className="mt-3 text-xl text-stone-500">
-                      {item.englishName}
-                    </p>
-
-                    <p className="mt-1 text-sm italic text-stone-400">
-                      {item.scientificName}
-                    </p>
-
-                    <div className="mt-5 flex items-center gap-4">
-                      <p className="text-lg tracking-widest text-[#a77b55]">
-                        {item.rarity}
-                      </p>
-                      <TankLevel level={item.searchDifficulty} />
-                    </div>
-
-                    <p className="mt-6 max-w-sm text-base leading-8 text-stone-600">
-                      {item.note}
-                    </p>
-
-                    <span className="mt-8 inline-flex items-center gap-8 text-sm font-semibold text-[#2d7780]">
-                      查看詳情
-                      <span className="text-2xl leading-none">→</span>
-                    </span>
-                  </div>
-                </a>
-              </article>
-            ))}
+            <SpeciesGrid species={species} categories={categories} />
           </div>
         </div>
       </section>

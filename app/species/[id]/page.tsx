@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import PhotoCarousel from "@/components/PhotoCarousel";
 
 const species = {
@@ -88,6 +89,16 @@ function TankLevel({ level }: { level: number }) {
           }`}
         />
       ))}
+=======
+import { getSpecies } from "@/lib/species";
+import PhotoCarousel from "@/components/PhotoCarousel";
+
+function TankLevel({ level }: { level: number }) {
+  return (
+    <div className="flex items-center gap-1 text-sm font-medium text-[#2d7780]">
+      <span>🤿</span>
+      <span>{level.toFixed(1)}</span>
+>>>>>>> 8e12887 (update species data and image layout)
     </div>
   );
 }
@@ -109,24 +120,43 @@ export default async function SpeciesPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+<<<<<<< HEAD
   const item = species[id as keyof typeof species];
 
   if (!item) {
     return (
       <main className="min-h-screen bg-[#faf9f5] px-10 py-20 text-[#1d1d1f]">
         <h1 className="text-4xl font-semibold">找不到這個物種</h1>
+=======
+  const species = await getSpecies();
+
+  const item = species.find((speciesItem) => speciesItem.id === id);
+
+  if (!item) {
+    return (
+      <main className="min-h-screen bg-[#faf9f5] px-8 py-16 text-[#1d1d1f]">
+        <a href="/" className="text-sm font-semibold text-[#2d7780]">
+          ← 回到圖鑑
+        </a>
+        <h1 className="mt-10 text-4xl font-semibold">找不到這個物種</h1>
+>>>>>>> 8e12887 (update species data and image layout)
       </main>
     );
   }
 
   return (
     <main className="min-h-screen bg-[#faf9f5] text-[#1d1d1f]">
+<<<<<<< HEAD
       <section className="mx-auto max-w-7xl px-8 pt-10">
+=======
+      <section className="mx-auto max-w-7xl px-5 pt-8 md:px-8 md:pt-10">
+>>>>>>> 8e12887 (update species data and image layout)
         <a href="/" className="text-sm font-semibold text-[#2d7780]">
           ← 回到圖鑑
         </a>
       </section>
 
+<<<<<<< HEAD
       <section className="mx-auto max-w-7xl px-8 pt-8">
         <PhotoCarousel photos={item.gallery} name={item.chineseName} />
       </section>
@@ -134,6 +164,19 @@ export default async function SpeciesPage({
       <section className="mx-auto grid max-w-7xl gap-10 px-8 py-12 md:grid-cols-[0.65fr_1.35fr]">
         <div>
           <p className="mb-5 text-sm font-semibold uppercase tracking-[0.35em] text-[#2d7780]">
+=======
+      <section className="mx-auto max-w-7xl px-5 pt-6 md:px-8 md:pt-8">
+        <PhotoCarousel
+        photos={item.gallery}
+        name={item.chineseName}
+        layout={item.imageLayout}
+        />
+      </section>
+
+      <section className="mx-auto grid max-w-7xl gap-10 px-5 py-10 md:grid-cols-[0.65fr_1.35fr] md:px-8 md:py-12">
+        <div>
+          <p className="mb-4 text-sm font-semibold uppercase tracking-[0.35em] text-[#2d7780]">
+>>>>>>> 8e12887 (update species data and image layout)
             {item.id}
           </p>
 
@@ -187,7 +230,11 @@ export default async function SpeciesPage({
         </div>
       </section>
 
+<<<<<<< HEAD
       <section className="mx-auto max-w-7xl px-8 pb-24">
+=======
+      <section className="mx-auto max-w-7xl px-5 pb-20 md:px-8 md:pb-24">
+>>>>>>> 8e12887 (update species data and image layout)
         <div className="border-t border-stone-300 pt-10">
           <p className="mb-3 text-sm font-semibold uppercase tracking-[0.3em] text-[#2d7780]">
             Field Notes
