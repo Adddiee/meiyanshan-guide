@@ -1,6 +1,29 @@
+import type { Metadata } from "next";
 import { getSpecies } from "@/lib/species";
 import PhotoCarousel from "@/components/PhotoCarousel";
 
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+
+  const species = await getSpecies();
+  const item = species.find((speciesItem) => speciesItem.id === id);
+
+  if (!item) {
+    return {
+      title: "找不到物種｜美艷山海域生物圖鑑",
+      description: "Lori & Adsn & Pei's Field Guide of MEIYANSHAN Sea Area",
+    };
+  }
+
+  return {
+    title: `${item.chineseName}｜美艷山海域生物圖鑑`,
+    description: item.description,
+  };
+}
 function TankLevel({ level }: { level: number }) {
   return (
     <div className="flex items-center gap-2 text-sm font-medium text-[#2d7780]">
