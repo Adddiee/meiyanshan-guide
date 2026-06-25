@@ -3,9 +3,13 @@ import PhotoCarousel from "@/components/PhotoCarousel";
 
 function TankLevel({ level }: { level: number }) {
   return (
-    <div className="flex items-center gap-1 text-sm font-medium text-[#2d7780]">
-      <span>🤿</span>
-      <span>{level.toFixed(1)}</span>
+    <div className="flex items-center gap-2 text-sm font-medium text-[#2d7780]">
+      <img
+        src="/icons/search-difficulty02.png"
+        alt="搜尋難度"
+        className="h-9 w-9 shrink-0"
+      />
+        <span className="text-base font-semibold">{level.toFixed(1)}</span>
     </div>
   );
 }
@@ -72,19 +76,41 @@ export default async function SpeciesPage({
 
           <p className="mt-2 italic text-stone-400">{item.scientificName}</p>
 
-          <div className="mt-8 grid max-w-md grid-cols-2 gap-8">
+          <div className="mt-8 grid max-w-md grid-cols-2 gap-10">
+            {/* 稀有度 */}
             <div>
-              <p className="mb-2 text-sm text-stone-500">稀有度</p>
-              <p className="text-xl tracking-widest text-[#a77b55]">
-                {item.rarity}
-              </p>
+                <p className="mb-2 text-sm text-stone-500">稀有度</p>
+
+                <div className="flex items-center gap-2">
+                <img
+                    src="/icons/treasure.png"
+                    alt="稀有度"
+                    className="h-7 w-auto shrink-0"
+                />
+
+                <p className="text-xl font-semibold text-[#a77b55]">
+                    {item.rarity}
+                </p>
+                </div>
             </div>
 
+            {/* 尋找難度 */}
             <div>
-              <p className="mb-2 text-sm text-stone-500">尋找難度</p>
-              <TankLevel level={item.searchDifficulty} />
+                <p className="mb-2 text-sm text-stone-500">尋找難度</p>
+
+                <div className="flex items-center gap-2">
+                <img
+                    src="/icons/search-difficulty01.png"
+                    alt="尋找難度"
+                    className="h-7 w-auto shrink-0"
+                />
+
+                <p className="text-xl font-semibold text-[#2d7780]">
+                    {item.searchDifficulty.toFixed(1)}
+                </p>
+                </div>
             </div>
-          </div>
+        </div>
         </div>
 
         <div className="space-y-10">

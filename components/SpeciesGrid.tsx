@@ -2,11 +2,31 @@
 
 import { useState } from "react";
 
-function TankLevel({ level }: { level: number }) {
+function TankLevel({
+  level,
+  icon = "/icons/search-difficulty01.png",
+  compact = false,
+}: {
+  level: number;
+  icon?: string;
+  compact?: boolean;
+}) {
   return (
-    <div className="flex items-center gap-1 text-xs font-medium text-[#2d7780] md:text-sm">
-      <span>🤿</span>
-      <span>{level.toFixed(1)}</span>
+    <div
+      className={
+        compact
+          ? "flex items-center justify-end gap-1.5 text-white"
+          : "flex items-center gap-1.5 text-[#2d7780]"
+      }
+    >
+      <img
+        src={icon}
+        alt="搜尋難度"
+        className={compact ? "h-5 w-auto shrink-0" : "h-[24px] w-auto shrink-0"}
+      />
+      <span className={compact ? "text-xs font-semibold" : "text-base font-semibold"}>
+        {level.toFixed(1)}
+      </span>
     </div>
   );
 }
@@ -24,7 +44,7 @@ function SpeciesImage({
         <img
           src={item.thumbnail}
           alt=""
-          className="absolute inset-0 h-full w-full scale-125 object-cover blur-2xl opacity-80"
+          className="absolute inset-0 h-full w-full scale-125 object-cover opacity-80 blur-2xl"
         />
 
         <div className="absolute inset-0 bg-black/25" />
@@ -44,6 +64,33 @@ function SpeciesImage({
       alt={item.chineseName}
       className={`w-full object-cover transition duration-700 group-hover:scale-105 ${className}`}
     />
+  );
+}
+
+function RarityLevel({
+  rarity,
+  compact = false,
+}: {
+  rarity: string;
+  compact?: boolean;
+}) {
+  return (
+    <div
+      className={
+        compact
+          ? "flex items-center justify-end gap-1.5 text-white"
+          : "flex items-center gap-2 text-[#a77b55]"
+      }
+    >
+      <img
+        src="/icons/treasure.png"
+        alt="稀有度"
+        className={compact ? "h-5 w-auto shrink-0" : "h-6 w-auto shrink-0"}
+      />
+      <span className={compact ? "text-xs font-semibold" : "text-base font-semibold"}>
+        {rarity}
+      </span>
+    </div>
   );
 }
 
@@ -98,35 +145,37 @@ export default function SpeciesGrid({
             <div className="relative overflow-hidden rounded-2xl bg-black">
               <SpeciesImage item={item} className="aspect-square" />
 
-              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent" />
+              <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
 
-              <div className="absolute bottom-0 left-0 right-0 p-3 text-white">
+              <div className="absolute bottom-0 left-0 right-0 z-20 p-3 text-white">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.18em] opacity-80">
                   {item.id}
                 </p>
-                <h3 className="mt-1 line-clamp-2 text-[15px] font-semibold leading-tight tracking-[-0.04em]">
-                  {item.chineseName}
-                </h3>
-                <p className="mt-1 line-clamp-1 text-[11px] text-white/75">
-                  {item.englishName}
-                </p>
+
+                <div className="mt-2 flex items-end justify-between gap-3">
+                  <div className="min-w-0">
+                    <h3 className="line-clamp-2 text-[15px] font-semibold leading-tight tracking-[-0.04em]">
+                      {item.chineseName}
+                    </h3>
+
+                    <p className="mt-1 line-clamp-1 text-[11px] text-white/75">
+                      {item.englishName}
+                    </p>
+                  </div>
+
+                  <div className="shrink-0 text-right">
+                    <RarityLevel rarity={item.rarity} compact />
+
+                    <div className="mt-1">
+                      <TankLevel
+                        level={item.searchDifficulty}
+                        icon="/icons/search-difficulty02.png"
+                        compact
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-
-            <div className="pt-1">
-              <div className="flex items-center gap-2">
-                <p className="text-xs tracking-widest text-[#a77b55]">
-                  {item.rarity}
-                </p>
-
-                <span className="text-stone-300">·</span>
-
-                <TankLevel level={item.searchDifficulty} />
-              </div>
-
-              <p className="mt-1 line-clamp-2 text-[11px] font-normal leading-4 text-stone-600">
-                {item.description}
-              </p>
             </div>
           </a>
         ))}
@@ -160,21 +209,12 @@ export default function SpeciesGrid({
                 </div>
 
                 <div className="mt-5 flex items-center gap-3">
-                  <p className="text-lg tracking-widest text-[#a77b55]">
-                    {item.rarity}
-                  </p>
+                  <RarityLevel rarity={item.rarity} />
+
                   <span className="text-stone-300">·</span>
+
                   <TankLevel level={item.searchDifficulty} />
                 </div>
-
-                <p className="mt-6 line-clamp-3 min-h-[96px] max-w-sm text-base leading-8 text-stone-600">
-                  {item.description}
-                </p>
-
-                <span className="mt-auto inline-flex items-center gap-8 pt-6 text-sm font-semibold text-[#2d7780]">
-                  查看詳情
-                  <span className="text-2xl leading-none">→</span>
-                </span>
               </div>
             </a>
           </article>
