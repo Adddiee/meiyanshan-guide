@@ -16,19 +16,51 @@ function toPreviewUrl(url: string) {
 }
 
 function WatermarkLogo() {
+
   return (
+
     <img
+
       src="/logo-watermark.png"
+
       alt=""
+
       draggable={false}
+
       onContextMenu={(e) => e.preventDefault()}
-      className="pointer-events-none absolute z-30 w-56 select-none opacity-90 drop-shadow-[0_0_12px_rgba(0,0,0,0.7)] md:w-100 lg:w-100"
+
+      className="
+
+        pointer-events-none
+
+        absolute
+
+        z-30
+
+        select-none
+
+        opacity-90
+
+        drop-shadow-[0_0_12px_rgba(0,0,0,0.7)]
+
+      "
+
       style={{
-        right: "-120px",
-        bottom: "-60px",
+
+        width: "30%",
+
+        maxWidth: "320px",
+
+        right: "-6%",
+
+        bottom: "-3%",
+
       }}
+
     />
+
   );
+
 }
 
 export default function PhotoCarousel({
