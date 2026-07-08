@@ -22,7 +22,7 @@ function WatermarkLogo() {
       alt=""
       draggable={false}
       onContextMenu={(e) => e.preventDefault()}
-      className="pointer-events-none absolute z-30 w-90 select-none opacity-90 drop-shadow-[0_0_12px_rgba(0,0,0,0.7)] md:w-100 lg:w-100"
+      className="pointer-events-none absolute z-30 w-56 select-none opacity-90 drop-shadow-[0_0_12px_rgba(0,0,0,0.7)] md:w-100 lg:w-100"
       style={{
         right: "-120px",
         bottom: "-60px",
