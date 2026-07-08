@@ -3,6 +3,34 @@
 import { useCallback, useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 
+function isVideoUrl(url: string) {
+  return (
+    url.includes("/preview") ||
+    url.includes("drive.google.com/file/d/") ||
+    /\.(mp4|mov|webm)(\?|$)/i.test(url)
+  );
+}
+
+function toPreviewUrl(url: string) {
+  return url.replace("/view", "/preview");
+}
+
+function WatermarkLogo() {
+  return (
+    <img
+      src="/logo-watermark.png"
+      alt=""
+      draggable={false}
+      onContextMenu={(e) => e.preventDefault()}
+      className="pointer-events-none absolute z-30 w-90 select-none opacity-90 drop-shadow-[0_0_12px_rgba(0,0,0,0.7)] md:w-100 lg:w-100"
+      style={{
+        right: "-120px",
+        bottom: "-60px",
+      }}
+    />
+  );
+}
+
 export default function PhotoCarousel({
   photos,
   name,
@@ -50,33 +78,75 @@ export default function PhotoCarousel({
     <div className="relative">
       <div ref={emblaRef} className="overflow-hidden rounded-[1.5rem]">
         <div className="flex">
-          {photos.map((photo) => (
-            <div key={photo} className="min-w-full">
-              {isLandscape ? (
-                <div className="relative h-[260px] w-full overflow-hidden bg-black md:h-[420px]">
-                  <img
-                    src={photo}
-                    alt=""
-                    className="absolute inset-0 h-full w-full scale-150 object-cover blur-2xl opacity-75"
-                  />
+          {photos.map((photo) => {
+            const isVideo = isVideoUrl(photo);
+            const videoSrc = toPreviewUrl(photo);
 
-                  <div className="absolute inset-0 bg-black/25" />
+            return (
+              <div key={photo} className="min-w-full">
+                {isVideo ? (
+                  <div
+                    onContextMenu={(e) => e.preventDefault()}
+                    className={
+                      isLandscape
+                        ? "relative h-[260px] w-full overflow-hidden bg-black md:h-[420px]"
+                        : "relative h-[320px] w-full overflow-hidden bg-black md:h-[420px]"
+                    }
+                  >
+                    <iframe
+                      src={videoSrc}
+                      title={`${name} video`}
+                      className="h-full w-full border-0"
+                      allow="autoplay; fullscreen"
+                      allowFullScreen
+                    />
 
-                  <img
-                    src={photo}
-                    alt={name}
-                    className="relative z-10 h-full w-full object-contain"
-                  />
-                </div>
-              ) : (
-                <img
-                  src={photo}
-                  alt={name}
-                  className="h-[320px] w-full object-cover md:h-[420px]"
-                />
-              )}
-            </div>
-          ))}
+                    <WatermarkLogo />
+                  </div>
+                ) : isLandscape ? (
+                  <div
+                    onContextMenu={(e) => e.preventDefault()}
+                    className="relative h-[260px] w-full overflow-hidden bg-black md:h-[420px]"
+                  >
+                    <img
+                      src={photo}
+                      alt=""
+                      draggable={false}
+                      onContextMenu={(e) => e.preventDefault()}
+                      className="absolute inset-0 h-full w-full scale-150 object-cover blur-2xl opacity-75"
+                    />
+
+                    <div className="absolute inset-0 bg-black/25" />
+
+                    <img
+                      src={photo}
+                      alt={name}
+                      draggable={false}
+                      onContextMenu={(e) => e.preventDefault()}
+                      className="relative z-10 h-full w-full object-contain"
+                    />
+
+                    <WatermarkLogo />
+                  </div>
+                ) : (
+                  <div
+                    onContextMenu={(e) => e.preventDefault()}
+                    className="relative h-[320px] w-full overflow-hidden md:h-[420px]"
+                  >
+                    <img
+                      src={photo}
+                      alt={name}
+                      draggable={false}
+                      onContextMenu={(e) => e.preventDefault()}
+                      className="h-full w-full object-cover"
+                    />
+
+                    <WatermarkLogo />
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -96,7 +166,7 @@ export default function PhotoCarousel({
             →
           </button>
 
-          <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-2 rounded-full bg-black/35 px-3 py-2 backdrop-blur">
+          <div className="absolute bottom-4 left-1/2 z-40 flex -translate-x-1/2 items-center gap-2 rounded-full bg-black/35 px-3 py-2 backdrop-blur">
             {photos.map((photo, index) => (
               <button
                 key={photo}
@@ -110,7 +180,7 @@ export default function PhotoCarousel({
             ))}
           </div>
 
-          <div className="absolute right-4 top-4 rounded-full bg-black/35 px-3 py-1 text-xs font-medium text-white backdrop-blur">
+          <div className="absolute right-4 top-4 z-40 rounded-full bg-black/35 px-3 py-1 text-xs font-medium text-white backdrop-blur">
             {selectedIndex + 1} / {photos.length}
           </div>
         </>

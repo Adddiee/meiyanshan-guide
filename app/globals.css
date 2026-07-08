@@ -24,3 +24,29 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+/* ===== MYS Media Protection ===== */
+
+img,
+video,
+iframe {
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+
+img {
+  pointer-events: auto;
+}
+
+/* 防止長按圖片（iPhone Safari） */
+img,
+video {
+  -webkit-touch-callout: none;
+}
+
+/* 防止文字被選取 */
+body {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
