@@ -32,22 +32,24 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen bg-[#faf9f5] text-[#1d1d1f]">
-      <header className="mx-auto flex max-w-7xl items-start justify-between px-5 py-6 md:px-10 md:py-10">
-        <div>
-          <p className="text-sm font-semibold tracking-[0.2em] md:text-lg md:tracking-[0.24em]">
-            美艷山海域生物圖鑑
-          </p>
-          <p className="mt-1 text-xs tracking-wide text-stone-600 md:text-sm">
-            MEIYANSHAN Marine Life Journal
-          </p>
-        </div>
+      <header className="mx-auto max-w-7xl px-5 py-6 md:px-10 md:py-10">
+        <div className="flex items-start gap-3 md:gap-6">
+          <div className="min-w-0">
+            <h1 className="text-3xl font-black tracking-wide sm:text-4xl md:text-5xl">
+              美艷山海域生物圖鑑
+            </h1>
 
-        <nav className="hidden items-center gap-12 text-sm font-medium text-stone-700 md:flex">
-          <span>圖鑑</span>
-          <span>觀察紀錄</span>
-          <span>關於計畫</span>
-          <span className="text-2xl leading-none">☰</span>
-        </nav>
+            <p className="mt-2 text-base text-stone-500 sm:text-xl md:text-2xl">
+              MEIYANSHAN Marine Life Journal
+            </p>
+          </div>
+
+          <img
+            src="/MYS-LOGO.svg"
+            alt="MYS Logo"
+            className="mt-[-4px] h-16 w-16 shrink-0 object-contain sm:h-20 sm:w-20 md:mt-[-8px] md:h-24 md:w-24"
+          />
+        </div>
       </header>
 
       <section className="relative mx-auto min-h-[480px] max-w-7xl overflow-hidden px-5 pb-20 pt-8 md:min-h-[760px] md:px-10 md:pb-24 md:pt-12">
@@ -143,14 +145,35 @@ export default async function Home() {
 
       <footer className="bg-[#f4f2ec] px-5 py-10 md:px-10">
         <div className="mx-auto flex max-w-7xl flex-col gap-8 text-sm text-stone-600 md:flex-row md:items-end md:justify-between">
-          <p className="max-w-xs text-lg leading-8 text-[#2d7780]">
+          <p className="max-w-sm text-2xl font-semibold leading-10 tracking-wide text-[#2d7780]">
             記錄每一次下潛，
             <br />
             遇見海洋的驚喜。
           </p>
+          <p className="flex-1 px-4 text-center leading-8 text-stone-600 max-w-2xl mx-auto">
 
-          <p>© 2026 美艷山圖鑑計畫</p>
+            <span className="font-medium">
 
+              © 2026 美艷山圖鑑計畫 All Rights Reserved.
+
+            </span>
+            <br />
+            我們熱愛海洋，也樂意分享這份美好。
+            希望您也尊重並珍惜潛水員們找到的寶藏。
+
+
+            <span className="block max-w-3xl mx-auto">
+
+              本站所有圖片、影片及文字內容均受著作權法保護。
+              歡迎轉載分享，惟請註明出處；未經授權，不得重製、散布或作商業用途。
+            </span>
+            <span className="text-[#2d7780]">
+
+              🐢 溫馨提醒：沒有註明出處的人，容易錯過大物、遇不到魚群風暴，海蛞蝓也會默默躲起來。
+
+            </span>
+
+          </p>
           <div className="flex gap-8 text-3xl text-black">
             <span>◎</span>
             <span>✉</span>

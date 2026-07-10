@@ -47,13 +47,13 @@ function WatermarkLogo() {
 
       style={{
 
-        width: "30%",
+        width: "15%",
 
-        maxWidth: "320px",
+        maxWidth: "150px",
 
-        right: "-6%",
+        right: "2%",
 
-        bottom: "-3%",
+        bottom: "1%",
 
       }}
 
