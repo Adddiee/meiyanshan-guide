@@ -41,7 +41,7 @@ function normalizeImagePosition(position?: string) {
     : "center";
 }
 
-function WatermarkLogo() {
+function MobileWatermarkLogo() {
   return (
     <img
       src="/logo-watermark.png"
@@ -62,6 +62,29 @@ function WatermarkLogo() {
         right: "2%",
         bottom: "1%",
       }}
+    />
+  );
+}
+
+function DesktopWatermarkLogo() {
+  return (
+    <img
+      src="/logo-watermark.png"
+      alt=""
+      draggable={false}
+      onContextMenu={(event) => event.preventDefault()}
+      className="
+        pointer-events-none
+        absolute
+        bottom-[2%]
+        right-[2%]
+        z-30
+        w-[150px]
+        max-w-[22%]
+        select-none
+        opacity-90
+        drop-shadow-[0_0_12px_rgba(0,0,0,0.7)]
+      "
     />
   );
 }
@@ -102,25 +125,42 @@ function DesktopContainedImage({
 
       <div className="absolute inset-0 hidden bg-black/25 md:block" />
 
-      {/* 桌機完整主圖 */}
-      <img
-        src={photo}
-        alt={name}
-        draggable={false}
-        onContextMenu={(event) => event.preventDefault()}
+      {/* 桌機主圖與浮水印共同容器 */}
+      <div
         className="
-          relative
+          absolute
+          inset-0
           z-10
           hidden
-          h-full
-          w-full
-          object-contain
-          md:block
+          items-center
+          justify-center
+          md:flex
         "
-        style={{
-          objectPosition: imagePosition,
-        }}
-      />
+      >
+        <div
+          className="
+            relative
+            flex
+            h-full
+            max-w-full
+            items-center
+            justify-center
+          "
+        >
+          <img
+            src={photo}
+            alt={name}
+            draggable={false}
+            onContextMenu={(event) => event.preventDefault()}
+            className="block h-full max-w-full object-contain"
+            style={{
+              objectPosition: imagePosition,
+            }}
+          />
+
+          <DesktopWatermarkLogo />
+        </div>
+      </div>
     </>
   );
 }
@@ -253,7 +293,7 @@ export default function PhotoCarousel({
                       allowFullScreen
                     />
 
-                    <WatermarkLogo />
+                    <MobileWatermarkLogo />
                   </div>
                 ) : isLandscape ? (
                   <div
@@ -270,7 +310,7 @@ export default function PhotoCarousel({
                       lg:h-[600px]
                     "
                   >
-                    {/* 手機與桌機都使用模糊背景 */}
+                    {/* 手機版 landscape 背景 */}
                     <img
                       src={photo}
                       alt=""
@@ -287,6 +327,7 @@ export default function PhotoCarousel({
                         object-cover
                         opacity-75
                         blur-2xl
+                        md:hidden
                       "
                       style={{
                         objectPosition:
@@ -294,9 +335,9 @@ export default function PhotoCarousel({
                       }}
                     />
 
-                    <div className="absolute inset-0 bg-black/25" />
+                    <div className="absolute inset-0 bg-black/25 md:hidden" />
 
-                    {/* Landscape 全尺寸都完整顯示 */}
+                    {/* 手機版 landscape 完整主圖 */}
                     <img
                       src={photo}
                       alt={name}
@@ -310,6 +351,7 @@ export default function PhotoCarousel({
                         h-full
                         w-full
                         object-contain
+                        md:hidden
                       "
                       style={{
                         objectPosition:
@@ -317,7 +359,18 @@ export default function PhotoCarousel({
                       }}
                     />
 
-                    <WatermarkLogo />
+                    <div className="md:hidden">
+                      <MobileWatermarkLogo />
+                    </div>
+
+                    {/* 平板與桌機 */}
+                    <DesktopContainedImage
+                      photo={photo}
+                      name={name}
+                      imagePosition={
+                        resolvedImagePosition
+                      }
+                    />
                   </div>
                 ) : (
                   <div
@@ -354,6 +407,10 @@ export default function PhotoCarousel({
                       }}
                     />
 
+                    <div className="md:hidden">
+                      <MobileWatermarkLogo />
+                    </div>
+
                     {/* 平板與桌機：模糊背景＋完整圖片 */}
                     <DesktopContainedImage
                       photo={photo}
@@ -362,8 +419,6 @@ export default function PhotoCarousel({
                         resolvedImagePosition
                       }
                     />
-
-                    <WatermarkLogo />
                   </div>
                 )}
               </div>
