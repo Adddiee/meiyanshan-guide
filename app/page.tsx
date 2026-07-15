@@ -1,3 +1,4 @@
+import RarityHelp from "@/components/RarityHelp";
 import SpeciesGrid from "@/components/SpeciesGrid";
 import { getSpecies } from "@/lib/species";
 
@@ -128,9 +129,13 @@ export default async function Home() {
               Field Guide
             </p>
 
-            <h2 className="text-4xl font-semibold tracking-[-0.06em] md:text-5xl">
-              圖鑑收錄
-            </h2>
+           <div className="flex items-center gap-3">
+              <h2 className="text-5xl font-black tracking-tight">
+                圖鑑收錄
+              </h2>
+
+              <RarityHelp />
+            </div>
 
             <p className="mt-5 max-w-xl text-base leading-8 text-stone-600 md:mt-6 md:text-lg">
               看看今天能遇見誰。
