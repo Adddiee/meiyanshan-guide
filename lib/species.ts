@@ -10,6 +10,7 @@ export type Species = {
   description: string;
   treasureHint: string;
   imageLayout: string;
+  imagePosition: string;
   imageFit: string;
   thumbnail: string;
   gallery: string[];
@@ -97,6 +98,7 @@ export async function getSpecies(): Promise<Species[]> {
       treasureHint: data.TreasureHint,
       imageLayout: data.ImageLayout || "square",
       imageFit: data.ImageFit || "cover",
+      imagePosition: data.ImagePosition || "center",
       thumbnail: data.Thumbnail,
       gallery: data.Gallery
         ? data.Gallery.split(",").map((file) => file.trim())

@@ -129,6 +129,7 @@ export default async function SpeciesPage({
           photos={item.gallery}
           name={item.chineseName}
           layout={item.imageLayout}
+          imagePosition={item.imagePosition}
         />
       </section>
 

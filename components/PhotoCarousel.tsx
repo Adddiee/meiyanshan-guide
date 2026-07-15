@@ -15,66 +15,76 @@ function toPreviewUrl(url: string) {
   return url.replace("/view", "/preview");
 }
 
+function normalizeImagePosition(position?: string) {
+  const normalized = String(position || "")
+    .trim()
+    .toLowerCase();
+
+  const allowedPositions = [
+    "center",
+    "top",
+    "bottom",
+    "left",
+    "right",
+    "top left",
+    "top right",
+    "bottom left",
+    "bottom right",
+    "center top",
+    "center bottom",
+    "left center",
+    "right center",
+  ];
+
+  return allowedPositions.includes(normalized)
+    ? normalized
+    : "center";
+}
+
 function WatermarkLogo() {
-
   return (
-
     <img
-
       src="/logo-watermark.png"
-
       alt=""
-
       draggable={false}
-
-      onContextMenu={(e) => e.preventDefault()}
-
+      onContextMenu={(event) => event.preventDefault()}
       className="
-
         pointer-events-none
-
         absolute
-
         z-30
-
         select-none
-
         opacity-90
-
         drop-shadow-[0_0_12px_rgba(0,0,0,0.7)]
-
       "
-
       style={{
-
         width: "15%",
-
         maxWidth: "150px",
-
         right: "2%",
-
         bottom: "1%",
-
       }}
-
     />
-
   );
-
 }
 
 export default function PhotoCarousel({
   photos,
   name,
   layout = "square",
+  imagePosition = "center",
 }: {
   photos: string[];
   name: string;
   layout?: string;
+  imagePosition?: string;
 }) {
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    loop: true,
+  });
+
   const isLandscape = layout === "landscape";
+  const resolvedImagePosition =
+    normalizeImagePosition(imagePosition);
 
   const scrollPrev = useCallback(() => {
     emblaApi?.scrollPrev();
@@ -95,7 +105,9 @@ export default function PhotoCarousel({
     if (!emblaApi) return;
 
     const onSelect = () => {
-      setSelectedIndex(emblaApi.selectedScrollSnap());
+      setSelectedIndex(
+        emblaApi.selectedScrollSnap()
+      );
     };
 
     onSelect();
@@ -106,19 +118,35 @@ export default function PhotoCarousel({
     };
   }, [emblaApi]);
 
+  if (!photos.length) {
+    return (
+      <div className="flex h-[320px] w-full items-center justify-center rounded-[1.5rem] bg-stone-200 text-sm font-medium text-stone-500 md:h-[420px]">
+        暫無圖片
+      </div>
+    );
+  }
+
   return (
     <div className="relative">
-      <div ref={emblaRef} className="overflow-hidden rounded-[1.5rem]">
+      <div
+        ref={emblaRef}
+        className="overflow-hidden rounded-[1.5rem]"
+      >
         <div className="flex">
-          {photos.map((photo) => {
+          {photos.map((photo, index) => {
             const isVideo = isVideoUrl(photo);
             const videoSrc = toPreviewUrl(photo);
 
             return (
-              <div key={photo} className="min-w-full">
+              <div
+                key={`${photo}-${index}`}
+                className="min-w-full"
+              >
                 {isVideo ? (
                   <div
-                    onContextMenu={(e) => e.preventDefault()}
+                    onContextMenu={(event) =>
+                      event.preventDefault()
+                    }
                     className={
                       isLandscape
                         ? "relative h-[260px] w-full overflow-hidden bg-black md:h-[420px]"
@@ -127,7 +155,7 @@ export default function PhotoCarousel({
                   >
                     <iframe
                       src={videoSrc}
-                      title={`${name} video`}
+                      title={`${name} video ${index + 1}`}
                       className="h-full w-full border-0"
                       allow="autoplay; fullscreen"
                       allowFullScreen
@@ -137,40 +165,64 @@ export default function PhotoCarousel({
                   </div>
                 ) : isLandscape ? (
                   <div
-                    onContextMenu={(e) => e.preventDefault()}
+                    onContextMenu={(event) =>
+                      event.preventDefault()
+                    }
                     className="relative h-[260px] w-full overflow-hidden bg-black md:h-[420px]"
                   >
+                    {/* 背景模糊圖 */}
                     <img
                       src={photo}
                       alt=""
                       draggable={false}
-                      onContextMenu={(e) => e.preventDefault()}
-                      className="absolute inset-0 h-full w-full scale-150 object-cover blur-2xl opacity-75"
+                      onContextMenu={(event) =>
+                        event.preventDefault()
+                      }
+                      className="absolute inset-0 h-full w-full scale-150 object-cover opacity-75 blur-2xl"
+                      style={{
+                        objectPosition:
+                          resolvedImagePosition,
+                      }}
                     />
 
                     <div className="absolute inset-0 bg-black/25" />
 
+                    {/* 主圖完整顯示 */}
                     <img
                       src={photo}
                       alt={name}
                       draggable={false}
-                      onContextMenu={(e) => e.preventDefault()}
+                      onContextMenu={(event) =>
+                        event.preventDefault()
+                      }
                       className="relative z-10 h-full w-full object-contain"
+                      style={{
+                        objectPosition:
+                          resolvedImagePosition,
+                      }}
                     />
 
                     <WatermarkLogo />
                   </div>
                 ) : (
                   <div
-                    onContextMenu={(e) => e.preventDefault()}
+                    onContextMenu={(event) =>
+                      event.preventDefault()
+                    }
                     className="relative h-[320px] w-full overflow-hidden md:h-[420px]"
                   >
                     <img
                       src={photo}
                       alt={name}
                       draggable={false}
-                      onContextMenu={(e) => e.preventDefault()}
+                      onContextMenu={(event) =>
+                        event.preventDefault()
+                      }
                       className="h-full w-full object-cover"
+                      style={{
+                        objectPosition:
+                          resolvedImagePosition,
+                      }}
                     />
 
                     <WatermarkLogo />
@@ -185,14 +237,18 @@ export default function PhotoCarousel({
       {photos.length > 1 && (
         <>
           <button
+            type="button"
             onClick={scrollPrev}
+            aria-label="上一張圖片"
             className="absolute left-4 top-1/2 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/60 bg-white/80 text-xl text-[#1d1d1f] shadow-sm backdrop-blur transition hover:bg-white md:flex"
           >
             ←
           </button>
 
           <button
+            type="button"
             onClick={scrollNext}
+            aria-label="下一張圖片"
             className="absolute right-4 top-1/2 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/60 bg-white/80 text-xl text-[#1d1d1f] shadow-sm backdrop-blur transition hover:bg-white md:flex"
           >
             →
@@ -201,8 +257,10 @@ export default function PhotoCarousel({
           <div className="absolute bottom-4 left-1/2 z-40 flex -translate-x-1/2 items-center gap-2 rounded-full bg-black/35 px-3 py-2 backdrop-blur">
             {photos.map((photo, index) => (
               <button
-                key={photo}
+                type="button"
+                key={`${photo}-dot-${index}`}
                 onClick={() => scrollTo(index)}
+                aria-label={`前往第 ${index + 1} 張圖片`}
                 className={`h-1.5 rounded-full transition ${
                   selectedIndex === index
                     ? "w-5 bg-white"
