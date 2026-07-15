@@ -124,7 +124,7 @@ export default async function SpeciesPage({
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-5 pt-6 md:px-8 md:pt-8">
+      <section className="mx-auto max-w-[1120px] px-5 pt-6 md:px-8 md:pt-10">
         <PhotoCarousel
           photos={item.gallery}
           name={item.chineseName}

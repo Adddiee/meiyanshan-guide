@@ -66,6 +66,65 @@ function WatermarkLogo() {
   );
 }
 
+function DesktopContainedImage({
+  photo,
+  name,
+  imagePosition,
+}: {
+  photo: string;
+  name: string;
+  imagePosition: string;
+}) {
+  return (
+    <>
+      {/* 桌機模糊背景 */}
+      <img
+        src={photo}
+        alt=""
+        draggable={false}
+        onContextMenu={(event) => event.preventDefault()}
+        className="
+          absolute
+          inset-0
+          hidden
+          h-full
+          w-full
+          scale-150
+          object-cover
+          opacity-75
+          blur-2xl
+          md:block
+        "
+        style={{
+          objectPosition: imagePosition,
+        }}
+      />
+
+      <div className="absolute inset-0 hidden bg-black/25 md:block" />
+
+      {/* 桌機完整主圖 */}
+      <img
+        src={photo}
+        alt={name}
+        draggable={false}
+        onContextMenu={(event) => event.preventDefault()}
+        className="
+          relative
+          z-10
+          hidden
+          h-full
+          w-full
+          object-contain
+          md:block
+        "
+        style={{
+          objectPosition: imagePosition,
+        }}
+      />
+    </>
+  );
+}
+
 export default function PhotoCarousel({
   photos,
   name,
@@ -78,11 +137,13 @@ export default function PhotoCarousel({
   imagePosition?: string;
 }) {
   const [selectedIndex, setSelectedIndex] = useState(0);
+
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
   });
 
   const isLandscape = layout === "landscape";
+
   const resolvedImagePosition =
     normalizeImagePosition(imagePosition);
 
@@ -120,7 +181,22 @@ export default function PhotoCarousel({
 
   if (!photos.length) {
     return (
-      <div className="flex h-[320px] w-full items-center justify-center rounded-[1.5rem] bg-stone-200 text-sm font-medium text-stone-500 md:h-[420px]">
+      <div
+        className="
+          flex
+          h-[320px]
+          w-full
+          items-center
+          justify-center
+          rounded-[1.5rem]
+          bg-stone-200
+          text-sm
+          font-medium
+          text-stone-500
+          md:h-[540px]
+          lg:h-[600px]
+        "
+      >
         暫無圖片
       </div>
     );
@@ -149,8 +225,24 @@ export default function PhotoCarousel({
                     }
                     className={
                       isLandscape
-                        ? "relative h-[260px] w-full overflow-hidden bg-black md:h-[420px]"
-                        : "relative h-[320px] w-full overflow-hidden bg-black md:h-[420px]"
+                        ? `
+                          relative
+                          h-[260px]
+                          w-full
+                          overflow-hidden
+                          bg-black
+                          md:h-[540px]
+                          lg:h-[600px]
+                        `
+                        : `
+                          relative
+                          h-[320px]
+                          w-full
+                          overflow-hidden
+                          bg-black
+                          md:h-[540px]
+                          lg:h-[600px]
+                        `
                     }
                   >
                     <iframe
@@ -168,9 +260,17 @@ export default function PhotoCarousel({
                     onContextMenu={(event) =>
                       event.preventDefault()
                     }
-                    className="relative h-[260px] w-full overflow-hidden bg-black md:h-[420px]"
+                    className="
+                      relative
+                      h-[260px]
+                      w-full
+                      overflow-hidden
+                      bg-black
+                      md:h-[540px]
+                      lg:h-[600px]
+                    "
                   >
-                    {/* 背景模糊圖 */}
+                    {/* 手機與桌機都使用模糊背景 */}
                     <img
                       src={photo}
                       alt=""
@@ -178,7 +278,16 @@ export default function PhotoCarousel({
                       onContextMenu={(event) =>
                         event.preventDefault()
                       }
-                      className="absolute inset-0 h-full w-full scale-150 object-cover opacity-75 blur-2xl"
+                      className="
+                        absolute
+                        inset-0
+                        h-full
+                        w-full
+                        scale-150
+                        object-cover
+                        opacity-75
+                        blur-2xl
+                      "
                       style={{
                         objectPosition:
                           resolvedImagePosition,
@@ -187,7 +296,7 @@ export default function PhotoCarousel({
 
                     <div className="absolute inset-0 bg-black/25" />
 
-                    {/* 主圖完整顯示 */}
+                    {/* Landscape 全尺寸都完整顯示 */}
                     <img
                       src={photo}
                       alt={name}
@@ -195,7 +304,13 @@ export default function PhotoCarousel({
                       onContextMenu={(event) =>
                         event.preventDefault()
                       }
-                      className="relative z-10 h-full w-full object-contain"
+                      className="
+                        relative
+                        z-10
+                        h-full
+                        w-full
+                        object-contain
+                      "
                       style={{
                         objectPosition:
                           resolvedImagePosition,
@@ -209,8 +324,17 @@ export default function PhotoCarousel({
                     onContextMenu={(event) =>
                       event.preventDefault()
                     }
-                    className="relative h-[320px] w-full overflow-hidden md:h-[420px]"
+                    className="
+                      relative
+                      h-[320px]
+                      w-full
+                      overflow-hidden
+                      bg-black
+                      md:h-[540px]
+                      lg:h-[600px]
+                    "
                   >
+                    {/* 手機：square 維持 cover */}
                     <img
                       src={photo}
                       alt={name}
@@ -218,11 +342,25 @@ export default function PhotoCarousel({
                       onContextMenu={(event) =>
                         event.preventDefault()
                       }
-                      className="h-full w-full object-cover"
+                      className="
+                        h-full
+                        w-full
+                        object-cover
+                        md:hidden
+                      "
                       style={{
                         objectPosition:
                           resolvedImagePosition,
                       }}
+                    />
+
+                    {/* 平板與桌機：模糊背景＋完整圖片 */}
+                    <DesktopContainedImage
+                      photo={photo}
+                      name={name}
+                      imagePosition={
+                        resolvedImagePosition
+                      }
                     />
 
                     <WatermarkLogo />
@@ -240,7 +378,28 @@ export default function PhotoCarousel({
             type="button"
             onClick={scrollPrev}
             aria-label="上一張圖片"
-            className="absolute left-4 top-1/2 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/60 bg-white/80 text-xl text-[#1d1d1f] shadow-sm backdrop-blur transition hover:bg-white md:flex"
+            className="
+              absolute
+              left-4
+              top-1/2
+              hidden
+              h-11
+              w-11
+              -translate-y-1/2
+              items-center
+              justify-center
+              rounded-full
+              border
+              border-white/60
+              bg-white/80
+              text-xl
+              text-[#1d1d1f]
+              shadow-sm
+              backdrop-blur
+              transition
+              hover:bg-white
+              md:flex
+            "
           >
             ←
           </button>
@@ -249,12 +408,49 @@ export default function PhotoCarousel({
             type="button"
             onClick={scrollNext}
             aria-label="下一張圖片"
-            className="absolute right-4 top-1/2 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/60 bg-white/80 text-xl text-[#1d1d1f] shadow-sm backdrop-blur transition hover:bg-white md:flex"
+            className="
+              absolute
+              right-4
+              top-1/2
+              hidden
+              h-11
+              w-11
+              -translate-y-1/2
+              items-center
+              justify-center
+              rounded-full
+              border
+              border-white/60
+              bg-white/80
+              text-xl
+              text-[#1d1d1f]
+              shadow-sm
+              backdrop-blur
+              transition
+              hover:bg-white
+              md:flex
+            "
           >
             →
           </button>
 
-          <div className="absolute bottom-4 left-1/2 z-40 flex -translate-x-1/2 items-center gap-2 rounded-full bg-black/35 px-3 py-2 backdrop-blur">
+          <div
+            className="
+              absolute
+              bottom-4
+              left-1/2
+              z-40
+              flex
+              -translate-x-1/2
+              items-center
+              gap-2
+              rounded-full
+              bg-black/35
+              px-3
+              py-2
+              backdrop-blur
+            "
+          >
             {photos.map((photo, index) => (
               <button
                 type="button"
@@ -270,7 +466,22 @@ export default function PhotoCarousel({
             ))}
           </div>
 
-          <div className="absolute right-4 top-4 z-40 rounded-full bg-black/35 px-3 py-1 text-xs font-medium text-white backdrop-blur">
+          <div
+            className="
+              absolute
+              right-4
+              top-4
+              z-40
+              rounded-full
+              bg-black/35
+              px-3
+              py-1
+              text-xs
+              font-medium
+              text-white
+              backdrop-blur
+            "
+          >
             {selectedIndex + 1} / {photos.length}
           </div>
         </>
